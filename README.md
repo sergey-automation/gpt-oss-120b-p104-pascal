@@ -1,6 +1,6 @@
 # GPT-OSS-120B on 10× P104-100 Pascal GPUs
 
-Running GPT-OSS-120B Q4_K_M GGUF on inexpensive Pascal mining GPUs using llama.cpp.
+Running GPT-OSS-120B Q4_K_M GGUF on Pascal mining GPUs using llama.cpp.
 
 Tested configuration:
 
@@ -14,23 +14,17 @@ Tested configuration:
 * Intel Pentium G4620
 * 16 GB RAM
 
-The goal of this repository is not to claim optimal performance.
-
-The goal is to document a reproducible real-world setup where a 120B MoE model successfully runs on old Pascal mining GPUs connected through PCIe Gen1 x1.
+The goal of this project is to show a practical configuration and working parameters for local GPT-OSS-120B inference on 10× P104-100 GPUs.
 
 ---
 
 # Repository
 
 Repository name:
-
 ```text
 gpt-oss-120b-p104-pascal
 ```
-
 ---
-
-# Hardware
 
 ## GPUs
 
@@ -56,22 +50,6 @@ Result:
 PCIe Gen1 x1
 8192 MiB each
 ```
-
-## CPU
-
-```text
-Intel Pentium G4620
-2 cores / 4 threads
-3.70 GHz
-```
-
-## RAM
-
-```text
-16 GB DDR4
-```
-
----
 
 # Software Environment
 
@@ -139,103 +117,6 @@ Embedding size: 2880
 Model params: 116.83B
 ```
 
-Quantization types inside GGUF:
-
-```text
-f32
-q5_0
-q8_0
-q4_K
-mxfp4
-```
-
-GGUF size:
-
-```text
-58.45 GiB
-```
-
----
-
-# Important Observations
-
-## Full GPU Offload
-
-llama.cpp successfully offloaded the full model to GPU:
-
-```text
-offloaded 37/37 layers to GPU
-```
-
-No CPU inference fallback was observed.
-
----
-
-## mmap=true
-
-The model was loaded with:
-
-```text
-mmap = true
-```
-
-This allows the GGUF file to remain memory-mapped instead of fully copied into RAM.
-
-System RAM usage remained low despite running a 120B model on a machine with only 16 GB RAM.
-
----
-
-## CPU_Mapped model buffer
-
-llama.cpp reported:
-
-```text
-CPU_Mapped model buffer size = 379 MiB
-```
-
-This does not mean CPU inference.
-
-The model remained fully GPU offloaded.
-
----
-
-## KV Cache Reservation
-
-KV cache memory was reserved in advance.
-
-VRAM usage remained nearly constant during long prompts.
-
-Example:
-
-```text
-GPU1:
-ctx256    -> 7678 MiB
-ctx32768  -> 7704 MiB
-```
-
-VRAM growth:
-
-```text
-~26 MiB
-```
-
-This indicates that llama.cpp preallocated KV cache memory for the configured context/parallel slots.
-
----
-
-## PARALLEL and Context Splitting
-
-llama.cpp splits the global context between parallel slots.
-
-Observed:
-
-```text
-PARALLEL=2 -> n_ctx_seq ≈ 66048
-PARALLEL=4 -> n_ctx_seq ≈ 33024
-PARALLEL=6 -> n_ctx_seq ≈ 22016
-```
-
----
 
 # Benchmark Configuration
 
@@ -243,28 +124,19 @@ Main benchmark configuration:
 
 ```text
 CTX_SIZE=131072
-PARALLEL=4
+PARALLEL=2
 CTK=f16
 BATCH=2048
 UBATCH=1024
 split-mode=layer
 ```
+When using CTK=q8_0, the compute buffer size increased and VRAM fitting became worse, causing some configurations to no longer fit into GPU memory.
 
 Tensor split:
 
 ```text
 2/4/4/4/4/4/4/4/3/3
 ```
-
-The setup successfully started and completed benchmark runs despite:
-
-```text
-cannot meet free memory targets on all devices
-```
-
-This indicates that llama.cpp "target free memory" is a safety heuristic rather than a hard limit.
-
----
 
 # Memory Usage
 
@@ -274,7 +146,6 @@ Projected VRAM usage:
 70480 MiB used
 80255 MiB available
 ```
-
 Free VRAM after allocation:
 
 ```text
@@ -313,36 +184,14 @@ GPU9  -> 2748 MiB free
 
 # GPU Utilization
 
-Average utilization:
-
-| Stage   | Average GPU Util |
-| ------- | ---------------: |
-| Prefill |          ~11–12% |
-| Decode  |          ~10–11% |
-
-This low utilization does not prove PCIe bandwidth bottleneck.
-
-The system still achieved:
-
-```text
-~283 tok/s prefill
-~30 tok/s decode
-```
-
-on:
-
 ```text
 10× Pascal GPUs
 PCIe Gen1 x1
 ```
-
-Observed behavior suggests pipeline imbalance and synchronization overhead rather than raw PCIe throughput limitation.
-
-GPU0 was often the busiest during prefill.
-
-GPU7–GPU9 were often the busiest during decode.
-
----
+Average GPU utilization:
+- Prefill: ~11–12%
+- Decode: ~10–11%
+Most of the time, only one GPU was actively loaded at once. The GPUs operated sequentially both during prefill and decode.
 
 # Power Consumption
 
@@ -356,22 +205,5 @@ Measured wall power:
 | Prefill stage           | ~680 W |
 | Decode stage            | ~580 W |
 
-During model loading, VRAM writes occurred mostly sequentially GPU-by-GPU.
-
----
-
-# Key Result
-
-This repository demonstrates that:
-
-```text
-GPT-OSS-120B Q4_K_M
-can run on
-10× Pascal P104-100 8GB
-through PCIe Gen1 x1
-using llama.cpp CUDA backend
-```
-
-The setup is not optimized for maximum performance.
-
-The focus is reproducibility and demonstrating that large MoE inference is technically possible on inexpensive older hardware.
+# Final Notes
+In this configuration, connecting GPUs through PCIe Gen1 x1 did not become a critical limitation for running GPT-OSS-120B.
