@@ -193,8 +193,8 @@ PCIe Gen1 x1
 ```
 Average GPU utilization:
 - Prefill: ~11–12%
-- Decode: ~10–11%
- Most of the time, only one GPU was actively loaded at once. The GPUs operated sequentially both during prefill and decode.
+- Decode: ~10–11%<br>
+Most of the time, only one GPU was actively loaded at once. The GPUs operated sequentially both during prefill and decode.
 
 # Power Consumption
 
