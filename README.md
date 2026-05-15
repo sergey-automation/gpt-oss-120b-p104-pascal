@@ -1,8 +1,11 @@
 # GPT-OSS-120B on 10× P104-100 Pascal GPUs
 
 Running GPT-OSS-120B Q4_K_M GGUF on Pascal mining GPUs using llama.cpp.
+## TTFT vs Decode
 
-Tested configuration:
+![TTFT vs Decode](reports/20260514_225855/ttft_decode_same_scale.png)
+
+# Tested configuration:
 
 * 10× NVIDIA P104-100 8GB
 * PCIe Gen1 x1
