@@ -8,7 +8,7 @@ Running GPT-OSS-120B Q4_K_M GGUF on Pascal mining GPUs using llama.cpp.
 
 ![TurboPrefill](reports/TurboPrefill_P104_10x/Turboprefill_P104_10x.png)
 
-Project: [TurboPrefill]([https://github.com/sergey-automation/TurboPrefill)
+https://github.com/sergey-automation/TurboPrefill
 
 # Tested configuration:
 
