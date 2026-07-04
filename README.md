@@ -4,7 +4,7 @@ Running GPT-OSS-120B Q4_K_M GGUF on Pascal mining GPUs using llama.cpp.
 ## TTFT vs Decode
 
 ![TTFT vs Decode](./reports/ttft_decode_same_scale.png)
-# Turboprefill vs sm_layer pipiline parallel
+# Turboprefill vs sm_layer pipeline parallel
 
 ![TurboPrefill](reports/TurboPrefill_P104_10x/Turboprefill_P104_10x.png)
 
