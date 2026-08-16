@@ -1,3 +1,20 @@
+# TurboPrefill Speedup on Multi-GPU System
+
+| Configuration | Model | Pipeline Parallel (tok/s) | TurboPrefill (tok/s) | Speedup |decode (tok/s) |
+ |-----------------------------|-------|-----------:|---------------:|--------:|----:|
+| **13**× P104-100 (Pascal) | DeepSeek-V4-Flash-0731-UD-IQ1_S | 30 | 133 | **4.3×** | **7.68×** |
+|  **4**× P104-100 (Pascal)  | Qwen3.8-27b_Q4_K_M+mtp=3 | 95 | 237 | **2.4×** | 12.5 |
+|  **6**× P104-100 (Pascal)  | Qwen3.8-27b_Q4_K_M+mtp=3  | 93 | 298 | **3.2×** | 12.7 |
+|  **6**× P104-100 (Pascal)  | Qwen3.8-27b_Q8+mtp=3  | 98 | 315 | **3.2×** | 13.4 |
+|  **6**× P104-100 (Pascal)  | Qwen3.8-27b_Q8 | 106 | 380 | **3.5×** | 6.75 | 
+| **6**× P104-100 (Pascal) | GPT-OSS-20B | 95 | 394 | **4.1×** | 32.5  | 
+| **10**× P104-100 (Pascal) | GPT-OSS-120B | 77 | 345 | **4.5×** | 25.4  | 
+| **12**× P104-100 (Pascal) | Llama-3-70B | 37 | 199 | **5.3×** | 3.94  | 
+|  **6**× P104-100 (Pascal)  | Qwen3.8-27b_Q8 | 106 | 380 | **3.5×** | 6.75 |
+|  **8**× P104-100 (Pascal)  | Qwen3.6-35B-A3B-Q8_0 | 174 | 913 | **5.2×** | 33 |
+|  **15**× P104-100 (Pascal)  | Qwen3.6-35B-A3B-bf16 | 27 | 204 | **7.5×** | 10 |
+ 
+
 # GPT-OSS-120B on 10× P104-100 Pascal GPUs
 
 Running GPT-OSS-120B Q4_K_M GGUF on Pascal mining GPUs using llama.cpp.
