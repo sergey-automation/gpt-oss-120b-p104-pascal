@@ -2,7 +2,7 @@
 
 | Configuration | Model | Pipeline Parallel (tok/s) | TurboPrefill (tok/s) | Speedup |decode (tok/s) |
  |-----------------------------|-------|-----------:|---------------:|--------:|----:|
-| **13**× P104-100 (Pascal) | DeepSeek-V4-Flash-0731-UD-IQ1_S | 30 | 133 | **4.3×** | **7.68×** |
+| **13**× P104-100 (Pascal) | DeepSeek-V4-Flash-0731-UD-IQ1_S | 30 | 133 | **4.3×** | 7.68 |
 |  **4**× P104-100 (Pascal)  | Qwen3.8-27b_Q4_K_M+mtp=3 | 95 | 237 | **2.4×** | 12.5 |
 |  **6**× P104-100 (Pascal)  | Qwen3.8-27b_Q4_K_M+mtp=3  | 93 | 298 | **3.2×** | 12.7 |
 |  **6**× P104-100 (Pascal)  | Qwen3.8-27b_Q8+mtp=3  | 98 | 315 | **3.2×** | 13.4 |
